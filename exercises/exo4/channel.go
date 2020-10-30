@@ -10,10 +10,13 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-
+	myChan := make(chan string)
 	res1 := fakeHttpRequest("google.com")
-	res2 := fakeHttpRequest("bing.com")
-
+	go func() {
+		defer close(myChan)
+		myChan <- fakeHttpRequest("bing.com")
+	}()
+	res2 := <-myChan
 	fmt.Printf(res1)
 	fmt.Printf(res2)
 }
