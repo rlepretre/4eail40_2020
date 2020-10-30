@@ -10,6 +10,18 @@ type spaceEraser struct {
 	r io.Reader
 }
 
+func (reader spaceEraser) Read(buffer []byte) (int, error) {
+	n, err := reader.r.Read(buffer)
+	char := 0
+	for i := 0; i < n; i++ {
+		if buffer[i] != 32 {
+			buffer[char] = buffer[i]
+			char++
+		}
+	}
+	return char, err
+}
+
 func main() {
 	s := strings.NewReader("H e l l o w o r l d!")
 	r := spaceEraser{s}
